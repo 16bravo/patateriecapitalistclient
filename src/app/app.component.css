@@ -1,6 +1,69 @@
+*{
+  font-family: 'Roboto Slab', serif;
+}
+
 .row {
   margin : 0;
 }
+
 .entete{
-  background-color:#e8ecb1;
+  background-color:#a29874;
+  color:white;
+  box-shadow: 0px 10px 10px #c7bc91;
+}
+
+.titre,.score{
+  font-size:40px;
+  font-family: 'Rammetto One', cursive;
+}
+
+.score{
+  text-align:right;
+}
+
+.logo{
+  max-width: 200px;
+}
+
+.product{
+  padding:10px;
+}
+
+.menu{
+  font-size:25px;
+  font-family: 'Rammetto One', cursive;
+}
+
+.menu>.row{
+  padding:10px;
+  margin-top:20px;
+  border-radius: 0 30px 30px 0;
+}
+
+.menu>.row:hover{
+  background-color: #d87b44;
+  color:white;
+  box-shadow: 0px 10px 10px #c7bc91;
+}
+
+.multi{
+  background-color: #d87b44;
+  border: 4px solid #b65822;
+  border-radius: 5px;
+  font-size: 20px;
+  text-align:center;
+}
+
+.multi:active{
+  border: 5px solid #b65822;
+  background-color: #a53800;
+}
+
+.multi>span{
+  font-family: 'Rammetto One', cursive;
+  color:white;
+}
+
+.colonne{
+  padding-right: 50px;
 }
