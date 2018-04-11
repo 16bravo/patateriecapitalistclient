@@ -1,21 +1,155 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="container-fluid">
   <div class="row entete">
-    <div class="col-md-1 col-sm-6 logo"> <img [attr.src]="'server'+'icones/'+world.logo" alt="Logo pataterie" height="auto" width="100%"/></div>
+    <div class="col-md-1 col-sm-6 logo"> <img [attr.src]="server+'icones/'+world.logo" alt="Logo pataterie" height="auto" width="100%"/></div>
     <div class="col-md-4 col-sm-6 titre">{{world.name}}</div>
-    <div class="col-md-3 col-sm-6 score"><span class="score" [innerHTML]="world.money | bigvalue"></span>$</div>
+    <div class="col-md-3 col-sm-6 score"><span class="score" [innerHTML]="world.money | bigvalue"></span> <img [attr.src]="server+'icones/money.png'" alt="money potato" height=50px width=auto /></div>
     <div class="col-md-1"></div>
     <div (click)="toggleMulti()" class="col-md-1 col-sm-6 multi"><span>X </span><span>{{qtmulti}}</span></div>
-    <div class="col-md-2">Pseudo</div>
+    <div class="col-md-2" style="color:black;"><input [(ngModel)]="username" (change)="onUsernameChanged()"/></div>
   </div>
   <div class="row">
     <div class="col-md-2 menu">
-      <div class="row">Unlocks</div>
-      <div class="row">Cash Upgrades</div>
-      <div class="row">Angel Upgrades</div>
-      <div class="row">Managers</div>
-      <div class="row">Investors</div>
+      <div class="row" data-toggle="modal" (click)="unlocksModal.show()">Unlocks</div>
+      <div class="row" data-toggle="modal" (click)="upgradesModal.show()">Cash Upgrades<span [hidden]="!upAv" style="color:#d87b44;float:right;font-size:30px;border-radius:100%;height:30px;width:30px;background-color:white;" class="badge"> ! </span></div>
+      <div class="row" data-toggle="modal" (click)="angelsModal.show()">Angel Upgrades<span [hidden]="!anAv" style="color:#d87b44;float:right;font-size:30px;border-radius:100%;height:30px;width:30px;background-color:white;" class="badge"> ! </span></div>
+      <div class="row" data-toggle="modal" (click)="managersModal.show()">Managers<span [hidden]="!manAv" style="color:#d87b44;float:right;font-size:30px;border-radius:100%;height:30px;width:30px;background-color:white;" class="badge"> ! </span></div>
+      <div class="row" data-toggle="modal" (click)="investorsModal.show()">Investors</div>
     </div>
+
+    <app-modal #unlocksModal>
+      <div class="app-modal-header">
+        <h4 class="modal-title">Liste des unlocks</h4>
+      </div>
+
+      <div class="app-modal-body">
+        <div class="col-md-6 product" *ngFor="let product of world.products.product">
+          <div class="col-md-12 unlock {{unlock.unlocked}}" *ngFor="let unlock of product.palliers.pallier">
+            <div class="col-md-6"><img class="round" [attr.src]="server+'icones/'+unlock.logo" alt="Logo {{unlock.name}}" width=100% /></div>
+            <div class="col-md-6" style="text-align:center;">
+              <div class="row nomManager">{{unlock.seuil}}</div>
+              <div class="row cible">{{product.name}} {{unlock.typeratio}} X{{unlock.ratio}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 unlock {{unlock.unlocked}}" *ngFor="let unlock of world.allunlocks.pallier">
+          <div class="col-md-6"><img class="round" [attr.src]="server+'icones/'+unlock.logo" alt="Logo {{unlock.name}}" width=100% /></div>
+          <div class="col-md-6" style="text-align:center;">
+            <div class="row nomManager">{{unlock.seuil}}</div>
+            <div class="row cible">Tout {{unlock.typeratio}}X{{unlock.ratio}}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-modal-footer">
+        <button type="button" class="hire" (click)="unlocksModal.hide()">Fermer !</button>
+      </div>
+    </app-modal>
+
+    <app-modal #upgradesModal>
+      <div class="app-modal-header">
+        <h4 class="modal-title">Acheter des upgrades et faites ce que vous voulez avec !</h4>
+      </div>
+
+      <div class="app-modal-body">
+        <div class="row manager {{upgrade.unlocked}}" *ngFor="let upgrade of world.upgrades.pallier">
+          <div class="col-md-3"><img class="round" [attr.src]="server+'icones/'+upgrade.logo" alt="Logo {{upgrade.name}}" width=100% /></div>
+          <div class="col-md-6" style="text-align:center;">
+            <div class="row nomManager">{{upgrade.name}}</div>
+            <div class="row cible">{{world.products.product[upgrade.idcible-1].name}}</div>
+            <div class="row" [innerHTML]="upgrade.seuil | bigvalue"></div>
+          </div>
+          <button (click)="buyUpgrade(upgrade)" [ngClass]="{'bloque': world.money < upgrade.seuil, 'col-md-3':true, 'hire':world.money >= upgrade.seuil}" style="height:50px;">ACHETER !</button>
+        </div>
+      </div>
+
+      <div class="app-modal-footer">
+        <button type="button" class="hire" (click)="upgradesModal.hide()">Fermer !</button>
+      </div>
+    </app-modal>
+
+    <app-modal #angelsModal>
+      <div class="app-modal-header">
+        <h4 class="modal-title">Regarde tout ce que tu peux faire en sacrifiant des anges patates !</h4>
+      </div>
+
+      <div class="app-modal-body">
+        <div class="row manager {{angel.unlocked}}" *ngFor="let angel of world.angelupgrades.pallier">
+          <div class="col-md-3"><img class="round" [attr.src]="server+'icones/'+angel.logo" alt="Logo {{angel.name}}" width=100% /></div>
+          <div class="col-md-6" style="text-align:center;">
+            <div class="row nomManager">{{angel.name}}</div>
+            <!---<div class="row cible">{{world.products.product[angel.idcible-1].name}}</div>--->
+            <div class="row" [innerHTML]="angel.seuil | bigvalue"></div>
+          </div>
+          <button (click)="buyAngelUpgrade(upgrade)" [ngClass]="{'bloque': world.activeangels < angel.seuil, 'col-md-3':true, 'hire':world.activeangels >= angel.seuil}" style="height:50px;font-size:14px;">SACRIFIER !</button>
+        </div>
+      </div>
+
+      <div class="app-modal-footer">
+        <button type="button" class="hire" (click)="angelsModal.hide()">Fermer !</button>
+      </div>
+    </app-modal>
+
+    <app-modal #managersModal>
+      <div class="app-modal-header">
+        <h4 class="modal-title">Des managers pour farmer de la patate !</h4>
+      </div>
+
+      <div class="app-modal-body">
+        <div class="row manager {{manager.unlocked}}" *ngFor="let manager of world.managers.pallier">
+          <div class="col-md-3"><img class="round" [attr.src]="server+'icones/'+manager.logo" alt="Logo {{manager.name}}" width=100% /></div>
+          <div class="col-md-6" style="text-align:center;">
+            <div class="row nomManager">{{manager.name}}</div>
+            <div class="row cible">{{world.products.product[manager.idcible-1].name}}</div>
+            <div class="row" [innerHTML]="manager.seuil | bigvalue"></div>
+          </div>
+          <button (click)="hireManager(manager)" [ngClass]="{'bloque': world.money < manager.seuil, 'col-md-3':true, 'hire':world.money >= manager.seuil}" style="height:50px;">ENGAGER !</button>
+        </div>
+      </div>
+
+      <div class="app-modal-footer">
+        <button type="button" class="hire" (click)="managersModal.hide()">Fermer !</button>
+      </div>
+    </app-modal>
+
+    <app-modal #investorsModal>
+      <div class="app-modal-header">
+        <h4 class="modal-title">Investissez dans les anges !</h4>
+      </div>
+
+      <div class="app-modal-body">
+        <div class="row">
+          <div class="col-md-4"></div>
+          <div class="col-md-4"><img style="border-radius:100%;" [attr.src]="server+'icones/angel.png'" alt="Logo ange" height="auto" width="100%"/></div>
+          <div class="col-md-4"></div>
+        </div>
+        <div class="row inv" style="text-align:center;font-size:1.2em;">Plus vous engrangez de patates, plus vous pouvez attirer d'investisseurs anges ! Ces solanacées ailées améliorent vos profits et débloquent de nouvelles améliorations, mais il vous faut vendre votre affaire et en redémarrer une pour qu'ils vous suivent.<br>(tkt ça vaut le coup)</div>
+        <div class="row inv">
+          <div class="col-md-6" style="text-align:center;">
+            <div class="row nomManager">Total Angels</div>
+            <div class="nombre">{{nbangelsgen}}</div>
+          </div>
+          <div class="col-md-6" style="text-align:center;">
+            <div class="row nomManager">Bonus Per Angel</div>
+            <div class="nombre">{{angelbonus}}%</div>
+          </div>
+        </div>
+        <div class="row inv">
+          <div class="col-md-6" style="text-align:center;">
+            <div class="row nomManager">Gained with restart</div>
+            <div class="nombre">{{totalangels}}</div>
+          </div>
+          <div class="col-md-6" style="text-align:center;">
+            <button (click)="restart()" class="col-md-3 hire" style="height:50px;width:100%;">TOUT VENDRE !</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-modal-footer">
+        <button type="button" class="hire" (click)="investorsModal.hide()">Fermer !</button>
+      </div>
+    </app-modal>
+
     <div class="col-md-5 colonne">
       <app-product (notifyMoney)="onBuy($event)" (notifyProduction)="onProductionDone($event)" [prod]="world.products.product[0]" [qtmulti]="qtmulti" [money]="world.money" class="product"></app-product>
       <app-product (notifyMoney)="onBuy($event)" (notifyProduction)="onProductionDone($event)" [prod]="world.products.product[1]" [qtmulti]="qtmulti" [money]="world.money" class="product"></app-product>
@@ -27,4 +161,5 @@
       <app-product (notifyMoney)="onBuy($event)" (notifyProduction)="onProductionDone($event)" [prod]="world.products.product[5]" [qtmulti]="qtmulti" [money]="world.money" class="product"></app-product>
     </div>
   </div>
+  <toaster-container></toaster-container>
 </div>

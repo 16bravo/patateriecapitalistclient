@@ -1,9 +1,9 @@
 <div class="row">
-  <div class="col-md-4"><img (click)="startFabrication()" class="round" [attr.src]="'http://localhost:8080/ISIS20.1.9/'+'icones/'+product.logo" alt="Logo {{product.name}}" width=100%/></div>
-  <div class="col-md-8 progress" #bar></div>
+ <div class="col-md-4"><img (click)="startFabrication()" [ngClass]="{'grise':product?.quantite==0,'round':true}" [attr.src]="'http://localhost:8080/ISIS20.1.9/'+'icones/'+product?.logo" alt="Logo {{product?.name}}" width=100% /></div>
+  <div class="col-md-8 progress" #bar><div class="revenu" [innerHTML]="product?.quantite*product?.revenu | bigvalue"></div></div>
 </div>
 <div class="row">
-  <div class="col-md-4 quantite">{{product.quantite}}</div>
-  <div (click)="buy()" class="col-md-5 cout {{style}}"><span class="cmulti" style="float:left; text-align:left;">X {{_qtmulti}}</span><span [innerHTML]="product.cout | bigvalue"></span></div>
-  <div class="col-md-3 timeleft">{{product.timeleft | date : "m:ss"}}</div>
+  <div class="col-md-4 quantite">{{product?.quantite}}</div>
+  <div (click)="buy()" [ngClass]="{'bloque':_money<product?.cout,'col-md-5':true,'cout':true}"><span class="cmulti" style="float:left; text-align:left;">X {{_qtmultip}}</span><span [innerHTML]="product?.cout | bigvalue"></span></div>
+  <div class="col-md-3 timeleft">{{product?.timeleft | date : "m:ss"}}</div>
 </div>
