@@ -59,8 +59,8 @@ export class AppComponent {
       }
 
       onProductionDone(p:Product){
-        this.world.money+=p.revenu*p.quantite*10;
-        this.world.score+=p.revenu*p.quantite*10;
+        this.world.money+=p.revenu*p.quantite;
+        this.world.score+=p.revenu*p.quantite;
         this.nbangelsgen=150*Math.sqrt(this.world.score/Math.pow(10,15))-this.totalangels;
         console.log(this.totalangels);
         this.ManagersAvailable();
