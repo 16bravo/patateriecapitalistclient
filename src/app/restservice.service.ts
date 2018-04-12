@@ -11,7 +11,7 @@ export class RestserviceService {
     this.server = "http://localhost:8080/ISIS20.1.9/";
     this.user = "";
   }
-  
+
   getUser() : string{
     return this.user;
   }
@@ -49,6 +49,12 @@ export class RestserviceService {
 
       putManager(manager : Pallier): Promise<Response> {
         return this.http.put(this.server + "webresources/generic/manager", manager,
+        { headers: this.setHeaders(this.user)} )
+        .toPromise();
+      };
+
+      putUpgrade(upgrade : Pallier): Promise<Response> {
+        return this.http.put(this.server + "webresources/generic/upgrade", upgrade,
         { headers: this.setHeaders(this.user)} )
         .toPromise();
       };

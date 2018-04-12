@@ -34,6 +34,7 @@ export class AppComponent {
     this.totalangels=0;
     this.activeangels=0;
     this.nbangelsgen=0;
+    this.bonusangels=2;
     this.toasterService = toasterService;
     this.server = service.getServer();
     this.username = localStorage.getItem("username");
@@ -51,15 +52,15 @@ export class AppComponent {
         this.qtmulti=1;
         this.money=this.world.money;
         this.score=this.world.score;
-        this.totalangels=this.world.totalangels;
-        console.log(this.world.totalangels);
-        this.activeangels=this.world.activeangels;
-        this.bonusangels=this.world.angelbonus;
+        //this.totalangels=this.world.totalangels;
+        //console.log(this.world.totalangels);
+        //this.activeangels=this.world.activeangels;
+        //this.bonusangels=this.world.angelbonus;
       }
 
       onProductionDone(p:Product){
-        this.world.money+=p.revenu*p.quantite*1000;
-        this.world.score+=p.revenu*p.quantite*1000;
+        this.world.money+=p.revenu*p.quantite*10;
+        this.world.score+=p.revenu*p.quantite*10;
         this.nbangelsgen=150*Math.sqrt(this.world.score/Math.pow(10,15))-this.totalangels;
         console.log(this.totalangels);
         this.ManagersAvailable();
@@ -139,7 +140,9 @@ export class AppComponent {
         this.onBuy(m.seuil);
         m.unlocked=true;
         this.toasterService.pop('success','Upgrade acheté !',m.name);
-        this.productsComponent.calcUpgrade(m);
+        console.log(this.productsComponent._results[m.idcible-1].product);
+        //calcUpgrade(m);
+        //this.service.putUpgrade(m);
       }
       this.UpgradesAvailable();
       //this.service.putManager(m);

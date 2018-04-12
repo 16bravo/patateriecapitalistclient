@@ -6,7 +6,7 @@
     <div class="col-md-3 col-sm-6 score"><span class="score" [innerHTML]="world.money | bigvalue"></span> <img [attr.src]="server+'icones/money.png'" alt="money potato" height=50px width=auto /></div>
     <div class="col-md-1"></div>
     <div (click)="toggleMulti()" class="col-md-1 col-sm-6 multi"><span>X </span><span>{{qtmulti}}</span></div>
-    <div class="col-md-2" style="color:black;"><input [(ngModel)]="username" (change)="onUsernameChanged()"/></div>
+    <div class="col-md-2 pseudo"><input [(ngModel)]="username" (change)="onUsernameChanged()"/></div>
   </div>
   <div class="row">
     <div class="col-md-2 menu">
@@ -131,7 +131,7 @@
           </div>
           <div class="col-md-6" style="text-align:center;">
             <div class="row nomManager">Bonus Per Angel</div>
-            <div class="nombre">{{angelbonus}}%</div>
+            <div class="nombre">{{bonusangels}}%</div>
           </div>
         </div>
         <div class="row inv">

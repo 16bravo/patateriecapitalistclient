@@ -26,15 +26,17 @@ export class ProductComponent implements OnInit {
   _qtmultip: any;
   _money: number;
   couttotal : number;
+  bonusvitesse : number;
   toasterService: ToasterService;
 
   constructor(private service: RestserviceService, toasterService: ToasterService) {this.toasterService = toasterService; }
 
-  @Input() set prod(value: Product) { this.product = value; }
+  @Input() set prod(value: Product) { this.product = value; if (this.product && this.product.timeleft > 0) { this.lastupdate = Date.now(); let progress = (this.product.vitesse - this.product.timeleft) / this.product.vitesse; this.progressbar.set(progress); this.progressbar.animate(1, { duration: this.product.timeleft }); } }
   @Input() set qtmulti(value: string) {this._qtmultip = value;this._qtmulti = value;if (this._qtmulti=="MAX" && this.product) this.calcMaxCanBuy();}
   @Input() set money(value: any) {this._money = value;}
 
   ngOnInit() {
+    this.bonusvitesse=1;
     setInterval(() => { this.calcScore(); }, 100);
     setInterval(() => { if(this._qtmulti=="MAX"){this.calcMaxCanBuy()};}, 250);
     this.progressbar = new ProgressBar.Line(this.progressBarItem.nativeElement, { strokeWidth: 50, color: '#6eb56c' });
@@ -72,6 +74,10 @@ export class ProductComponent implements OnInit {
 
   calcScore(){
     if(this.product.managerUnlocked==true){this.startFabrication();};
+    /*console.log(this.bonusvitesse);
+    this.product.timeleft = this.product.timeleft / this.bonusvitesse;
+    this.bonusvitesse = 1;
+    this.progressbar.animate(1, { duration: this.product.timeleft });*/
     if(this.product.timeleft>0){
       let tempsEcoule = Date.now()-this.lastupdate;
       this.product.timeleft=(this.product.vitesse)-tempsEcoule;
@@ -87,22 +93,7 @@ export class ProductComponent implements OnInit {
   }
 
   calcMaxCanBuy(){
-    /*let max = 0;
-    let parth = 0;
-    let nb = 0;
-    while(max<=this._money){
-    parth+=Math.pow(this.product.croissance,nb);
-    max=this.product.cout*parth;
-    nb++;
-  }
-  nb--;//je sais que c'est pas terrible, pas la peine de me le rappeler
-  this._qtmultip=nb;
-  parth-=Math.pow(this.product.croissance,nb+1);
-  console.log(Math.round(Math.log(1 - (this._money / this.product.cout) * (1 - this.product.croissance)) / Math.log(this.product.croissance)));
-  /*this._qtmultip=Math.floor(Math.log(1 - (this._money / this.product.cout) * (1 - this.procduct.croissance)) / Math.log(this.product.croissance));
-  console.log(this._qtmultip);*/
   this._qtmultip=Math.floor(Math.log(1 - (this._money / this.product.cout) * (1 - this.product.croissance)) / Math.log(this.product.croissance));
-  //console.log(this._qtmultip);
 }
 
 calcUpgrade(tu:Pallier){
@@ -110,6 +101,7 @@ calcUpgrade(tu:Pallier){
       this.product.revenu = this.product.revenu*tu.ratio;
     }else if(tu.typeratio=="VITESSE"){
       this.product.vitesse = Math.round(this.product.vitesse/tu.ratio);
+      this.bonusvitesse=tu.ratio;
     }
     tu.unlocked = true;
     this.service.putProduct(this.product);
